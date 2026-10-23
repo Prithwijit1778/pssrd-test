@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 💖</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a0b1c 0%, #3b1428 50%, #1f0d1b 100%);
+            color: #fce7f3;
+            overflow-x: hidden;
+        }
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Floating hearts background animation */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            color: rgba(244, 114, 182, 0.4);
+            animation: floatUp 8s infinite linear;
+            user-select: none;
+            pointer-events: none;
+        }
+        /* Pulse glow for title */
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 40px rgba(244, 63, 94, 0.3); }
+            50% { text-shadow: 0 0 35px rgba(244, 63, 94, 0.9), 0 0 60px rgba(244, 63, 94, 0.5); }
+        }
+        .glow-text {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative p-4">
+
+    <!-- Floating Background Hearts Container -->
+    <div id="hearts-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- Main Container -->
+    <main class="relative z-10 w-full max-w-md">
+
+        <!-- Login View -->
+        <div id="login-view" class="glass-card rounded-3xl p-8 shadow-2xl transition-all duration-500">
+            <div class="text-center mb-8">
+                <div class="inline-block p-3 rounded-full bg-rose-500/10 text-rose-400 mb-3 text-3xl">
+                    💖
+                </div>
+                <h1 class="heading-font text-3xl font-bold tracking-wide text-white">Welcome Back</h1>
+                <p class="text-rose-200/70 text-sm mt-1">Please sign in to continue</p>
+            </div>
+
+            <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-rose-200/80 mb-2 font-medium">Username</label>
+                    <input type="text" id="username-input" required 
+                        class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-rose-300/30 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition"
+                        placeholder="Enter username">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-rose-200/80 mb-2 font-medium">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password-input" required 
+                            class="w-full bg-black/30 border border-white/10 rounded-xl pl-4 pr-11 py-3 text-white placeholder-rose-300/30 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition"
+                            placeholder="Enter password">
+                        <button type="button" onclick="togglePasswordVisibility('password-input', 'eye-icon-login')" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-rose-300/60 hover:text-rose-200 transition focus:outline-none p-1">
+                            <span id="eye-icon-login" class="text-lg select-none">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-medium rounded-xl shadow-lg shadow-rose-600/30 transition transform active:scale-98">
+                    Sign In ✨
+                </button>
+            </form>
+        </div>
+
+        <!-- Romantic Dashboard View (Hidden by Default) -->
+        <div id="dashboard-view" class="hidden glass-card rounded-3xl p-8 shadow-2xl text-center transition-all duration-500">
+            <div class="mb-6 flex justify-end">
+                <button onclick="openChangePasswordModal()" 
+                    class="text-xs bg-white/10 hover:bg-white/25 text-rose-200 px-3 py-1.5 rounded-lg transition border border-white/10 flex items-center gap-1.5">
+                    🔑 Change Password
+                </button>
+            </div>
+
+            <div class="my-8 space-y-6">
+                <div class="text-6xl animate-bounce">💌</div>
+                <h1 class="heading-font text-5xl md:text-6xl font-bold text-rose-400 glow-text leading-tight">
+                    I love u
+                </h1>
+                <p class="text-rose-200/80 text-sm max-w-xs mx-auto leading-relaxed">
+                    Every moment with you feels like magic. You hold the key to my heart forever. 💕
+                </p>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-white/10 flex justify-center">
+                <button onclick="handleLogout()" 
+                    class="text-xs bg-rose-950/50 hover:bg-rose-900/50 text-rose-300 px-4 py-2 rounded-xl border border-rose-800/50 transition">
+                    Log Out
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Change Password Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-rose-500/20">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="heading-font text-xl font-bold text-white">Change Password</h3>
+                <button onclick="closeChangePasswordModal()" class="text-rose-300 hover:text-white text-xl">&times;</button>
+            </div>
+
+            <form id="change-password-form" class="space-y-4" onsubmit="handleChangePassword(event)">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-rose-200/80 mb-1.5 font-medium">New Password</label>
+                    <div class="relative">
+                        <input type="password" id="new-password-input" required 
+                            class="w-full bg-black/30 border border-white/10 rounded-xl pl-4 pr-11 py-2.5 text-white placeholder-rose-300/30 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition text-sm"
+                            placeholder="Enter new password">
+                        <button type="button" onclick="togglePasswordVisibility('new-password-input', 'eye-icon-new')" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-rose-300/60 hover:text-rose-200 transition focus:outline-none p-1">
+                            <span id="eye-icon-new" class="text-sm select-none">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-rose-200/80 mb-1.5 font-medium">Confirm New Password</label>
+                    <div class="relative">
+                        <input type="password" id="confirm-password-input" required 
+                            class="w-full bg-black/30 border border-white/10 rounded-xl pl-4 pr-11 py-2.5 text-white placeholder-rose-300/30 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition text-sm"
+                            placeholder="Confirm new password">
+                        <button type="button" onclick="togglePasswordVisibility('confirm-password-input', 'eye-icon-confirm')" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-rose-300/60 hover:text-rose-200 transition focus:outline-none p-1">
+                            <span id="eye-icon-confirm" class="text-sm select-none">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeChangePasswordModal()" 
+                        class="flex-1 py-2.5 bg-white/10 hover:bg-white/20 text-rose-200 font-medium rounded-xl text-sm transition">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                        class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-medium rounded-xl text-sm shadow-lg shadow-rose-600/30 transition">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Message Modal (Replacing alert) -->
+    <div id="message-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl border border-rose-500/20">
+            <div id="modal-icon" class="text-3xl mb-3">⚠️</div>
+            <p id="modal-message" class="text-white text-sm mb-6 leading-relaxed"></p>
+            <button onclick="closeMessageModal()" 
+                class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-medium rounded-xl text-sm transition">
+                Okay
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Application State stored securely in memory
+        const validUsername = "moon_lit_verse";
+        let currentPassword = "17122009";
+
+        // Toggle Password Visibility Function
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+
+        // Generate floating background hearts
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartSymbols = ['❤️', '💖', '💗', '💓', '✨', '💕'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 6) + 's';
+                container.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }, 600);
+        }
+
+        // Custom notification helper instead of alert()
+        function showMessage(message, isSuccess = false) {
+            const modal = document.getElementById('message-modal');
+            const msgEl = document.getElementById('modal-message');
+            const iconEl = document.getElementById('modal-icon');
+            
+            msgEl.textContent = message;
+            iconEl.textContent = isSuccess ? "💖" : "⚠️";
+            modal.classList.remove('hidden');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
+
+        // Handle Login Submission
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username-input').value.trim();
+            const password = document.getElementById('password-input').value;
+
+            if (username === validUsername && password === currentPassword) {
+                // Successful Login - Switch to Dashboard
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                
+                // Clear input fields for security
+                document.getElementById('username-input').value = '';
+                document.getElementById('password-input').value = '';
+            } else {
+                showMessage("Incorrect username or password. Please try again.");
+            }
+        }
+
+        // Handle Logout
+        function handleLogout() {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('login-view').classList.remove('hidden');
+        }
+
+        // Modal Controls for Password Change
+        function openChangePasswordModal() {
+            document.getElementById('new-password-input').value = '';
+            document.getElementById('confirm-password-input').value = '';
+            document.getElementById('password-modal').classList.remove('hidden');
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
+        }
+
+        // Handle Password Change Action
+        function handleChangePassword(event) {
+            event.preventDefault();
+            const newPass = document.getElementById('new-password-input').value;
+            const confirmPass = document.getElementById('confirm-password-input').value;
+
+            if (newPass.length < 4) {
+                showMessage("Password must be at least 4 characters long.");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showMessage("Passwords do not match. Please try again.");
+                return;
+            }
+
+            // Update password in memory
+            currentPassword = newPass;
+            closeChangePasswordModal();
+            showMessage("Password successfully changed! Use this new password next time you log in.", true);
+        }
+
+        // Initialize animations on load
+        window.onload = function () {
+            createFloatingHearts();
+        };
+    </script>
+</body>
+</html>
